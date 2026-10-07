@@ -10,6 +10,7 @@ import berthRoutes from "./routes/BerthRoutes";
 import berthPlanRoutes from "./routes/BerthPlanRoutes";
 import yardSlotRoutes from "./routes/YardSlotRoutes";
 import workTaskRoutes from "./routes/WorkTaskRoutes";
+import { berthPlanService } from "./services/BerthPlanService";
 
 const app = express();
 app.use(cors());
@@ -24,4 +25,6 @@ app.use("/api/berth-plan", berthPlanRoutes);
 app.use("/api/yard-slot", yardSlotRoutes);
 app.use("/api/work-task", workTaskRoutes);
 app.use(errorHandlerMiddleware);
+// 启动即自动重算一遍泊位压港，让步方进入 CONFLICT 并记入操作日志。
+berthPlanService.recalculateConflicts(0);
 app.listen(config.port, () => console.log("port-yard backend listening on", config.port));

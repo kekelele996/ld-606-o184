@@ -1,7 +1,16 @@
 export const LOG_TEMPLATES = {
-  Vessel: ["Vessel.create", "Vessel.update", "Vessel.status", "Vessel.export"],
-  Berth: ["Berth.create", "Berth.update", "Berth.status", "Berth.export"],
-  BerthPlan: ["BerthPlan.create", "BerthPlan.update", "BerthPlan.status", "BerthPlan.export"],
-  YardSlot: ["YardSlot.create", "YardSlot.update", "YardSlot.status", "YardSlot.export"],
-  WorkTask: ["WorkTask.create", "WorkTask.update", "WorkTask.status", "WorkTask.export"]
+  Vessel: { CREATE: "Vessel.create", UPDATE: "Vessel.update", STATUS: "Vessel.status", EXPORT: "Vessel.export" },
+  Berth: { CREATE: "Berth.create", UPDATE: "Berth.update", STATUS: "Berth.status", EXPORT: "Berth.export" },
+  BerthPlan: {
+    CREATE: "BerthPlan.create",
+    UPDATE: "BerthPlan.update",
+    STATUS: "BerthPlan.status",
+    EXPORT: "BerthPlan.export",
+    CONFLICT_RECALCULATE: "BerthPlan.conflict.recalculate",
+    RESCHEDULE: "BerthPlan.reschedule",
+    APPROVE: "BerthPlan.approve",
+    APPROVE_REJECTED: "BerthPlan.approve.rejected"
+  },
+  YardSlot: { CREATE: "YardSlot.create", UPDATE: "YardSlot.update", STATUS: "YardSlot.status", EXPORT: "YardSlot.export" },
+  WorkTask: { CREATE: "WorkTask.create", UPDATE: "WorkTask.update", STATUS: "WorkTask.status", EXPORT: "WorkTask.export" }
 };

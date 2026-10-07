@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS berth_plan (
   berth_id TEXT,
   planned_arrival TEXT,
   planned_departure TEXT,
-  priority TEXT,
+  priority INTEGER,
   status TEXT,
   dispatcher_id TEXT
 );
@@ -59,5 +59,15 @@ CREATE TABLE IF NOT EXISTS audit_log (
   action TEXT,
   target_type TEXT,
   target_id TEXT,
+  created_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS operation_log (
+  id INTEGER PRIMARY KEY,
+  action TEXT,
+  entity_type TEXT,
+  entity_id TEXT,
+  detail TEXT,
+  operator_id TEXT,
   created_at TEXT
 );

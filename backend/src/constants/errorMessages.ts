@@ -1,1 +1,1 @@
-export const ERROR_MESSAGES = { AUTH_REQUIRED: "missing bearer token", RBAC_DENIED: "role denied", VALIDATION_FAILED: "invalid payload", RATE_LIMITED: "too many requests" };
+export const ERROR_MESSAGES = { AUTH_REQUIRED: "missing bearer token", RBAC_DENIED: "role denied", VALIDATION_FAILED: "invalid payload", RATE_LIMITED: "too many requests", PLAN_NOT_FOUND: "berth plan not found", INVALID_TIME_RANGE: "planned_arrival must be earlier than planned_departure", PLAN_IN_CONFLICT: "plan is in CONFLICT and cannot be approved, reschedule it first" };
