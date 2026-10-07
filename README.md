@@ -52,9 +52,20 @@ backend/src/routes, controllers, services, models, repositories, middlewares, co
 - 数据库使用命名卷，避免绑定中文路径。
 - 常见问题：端口占用时修改 `.env` 中端口后重启；需要重置数据时执行 `docker compose down -v`。
 
+## 泊位压港检测与审批联动
+
+泊位计划页（`/berths`）自动检测**同一泊位时间区间相撞**（半开区间 `[靠泊, 离泊)`，首尾相接不算压港）。
+
+- **让步口径（唯一一条挂压港标记）**：相撞的两条计划中，`priority` 等级低的让等级高的（HIGH > NORMAL > LOW）；优先级相同则计划编号大的让编号小的（先编先排）。压港只标在让步方一条上，保留方不标红。
+- **审批挂钩**：压港计划（`CONFLICT`）审批接口直接驳回（409 `BERTH_PLAN_CONFLICT_APPROVAL_BLOCKED`）；改期后后端重新计算一遍，解除压港的计划退回 `DRAFT`，再走审批。
+- **操作日志**：冲突计算（标记/解除）、改期、审批通过/驳回均写 `audit_log`，可在页面底部或 `GET /api/berth-plan/logs` 查看。
+- 前端 `hooks/useBerthConflict.ts` 与后端 `services/BerthPlanConflictService.ts` 使用同一套口径；红色标记与审批拦截以后端返回的 `in_conflict` 为准。
+
+接口：`GET /api/berth-plan`、`POST /api/berth-plan`、`PATCH /api/berth-plan/:id/reschedule`、`POST /api/berth-plan/:id/approve`、`GET /api/berth-plan/logs`。
+
 ## 枚举/常量出现位置清单
 
-- BerthPlanStatus: constants/BerthPlanStatus、types/BerthPlanStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
+- BerthPlanStatus: constants/BerthPlanStatus、types/BerthPlanStatus、constructors、logTemplates、errorMessages、errorCodes、hooks/useBerthConflict、components/common（StatusBadge/ConflictBadge/BerthTimeline）、pages/BerthsPage、后端 constants/services/controllers/repositories、database/init.sql 均有引用。
 - YardSlotStatus: constants/YardSlotStatus、types/YardSlotStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - WorkTaskType: constants/WorkTaskType、types/WorkTaskType、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 

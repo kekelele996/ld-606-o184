@@ -1,0 +1,85 @@
+<section class="bp-head">
+  <div>
+    <p class="eyebrow">BERTH PLAN</p>
+    <h1>泊位计划</h1>
+    <p class="rule">
+      压港让行口径：同一泊位时间区间相撞时，<strong>优先级低的让优先级高的</strong>；优先级相同则<strong>编号大的让编号小的</strong>。
+      压港只标在让步方一条计划上，改期后自动重算，解除压港退回草稿后再审批。
+    </p>
+  </div>
+  <div class="head-actions">
+    <span class="conflict-summary" *ngIf="conflictCount() > 0">当前 {{ conflictCount() }} 条压港待改期</span>
+    <span class="conflict-summary ok" *ngIf="conflictCount() === 0">无压港，计划可正常审批</span>
+    <button class="btn ghost" (click)="showLogs()">刷新日志</button>
+  </div>
+</section>
+
+<p class="banner error" *ngIf="store.error()">{{ store.error() }}</p>
+<p class="banner" *ngIf="store.loading()">正在从后端加载计划…</p>
+
+<section class="panel">
+  <h2>泊位甘特图（红色仅标让步方）</h2>
+  <app-berth-timeline
+    [berths]="berthStore.rows()"
+    [plans]="store.rows()"
+    [vesselNameOf]="vesselName.bind(this)"
+  />
+</section>
+
+<section class="panel">
+  <h2>计划列表与审批</h2>
+  <p class="banner warn" *ngIf="actionError()">{{ actionError() }}</p>
+  <table class="plan-table">
+    <thead>
+      <tr>
+        <th>编号</th><th>船舶</th><th>泊位</th><th>靠泊 ~ 离泊</th><th>优先级</th><th>状态</th><th>压港说明</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of store.rows()" [class.row-conflict]="row.in_conflict">
+        <td>#{{ row.id }}</td>
+        <td>{{ vesselName(row.vessel_id) }}</td>
+        <td>{{ berthCode(row.berth_id) }}</td>
+        <td class="time-cell">
+          <ng-container *ngIf="editingId() !== row.id">
+            {{ formatDate(row.planned_arrival) }}<br>~ {{ formatDate(row.planned_departure) }}
+          </ng-container>
+          <div class="edit-time" *ngIf="editingId() === row.id">
+            <label>靠泊 <input type="datetime-local" [(ngModel)]="editForm().arrival"></label>
+            <label>离泊 <input type="datetime-local" [(ngModel)]="editForm().departure"></label>
+          </div>
+        </td>
+        <td><span class="prio" [class.p-high]="row.priority === 'HIGH'" [class.p-low]="row.priority === 'LOW'">{{ priorityLabel(row.priority) }}</span></td>
+        <td><app-status-badge [text]="statusLabel(row.status)" [tone]="toneOf(row.status)" /></td>
+        <td class="conflict-cell">
+          <app-conflict-badge [inConflict]="row.in_conflict" [otherPlanId]="row.conflict_with?.other_plan_id ?? null" [reason]="reasonOf(row)" />
+          <small class="reason" *ngIf="row.in_conflict">{{ reasonOf(row) }}</small>
+        </td>
+        <td class="actions-cell">
+          <ng-container *ngIf="editingId() !== row.id">
+            <button class="btn small" [disabled]="['BERTHING','DEPARTED','CANCELLED'].includes(row.status)" (click)="startEdit(row)">改期</button>
+            <button class="btn small primary" *ngIf="isApproving(row)" (click)="approve(row)">审批通过</button>
+            <span class="locked" *ngIf="row.status === 'CONFLICT'">压港未解除，禁止审批</span>
+            <button class="btn small ghost" (click)="showLogs(row.id)">日志</button>
+          </ng-container>
+          <ng-container *ngIf="editingId() === row.id">
+            <button class="btn small primary" (click)="submitReschedule(row)">保存并重算</button>
+            <button class="btn small ghost" (click)="cancelEdit()">取消</button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h2>操作日志 <small class="log-filter">当前：{{ selectedLogPlanId() ? '计划 #' + selectedLogPlanId() : '全部泊位计划' }}</small></h2>
+  <p class="empty" *ngIf="store.logs().length === 0">暂无日志，冲突计算、改期和审批都会在此留痕。</p>
+  <ul class="log-list">
+    <li *ngFor="let log of store.logs()">
+      <span class="log-action">{{ logActionLabel(log.action) }}</span>
+      <span class="log-detail">{{ log.detail }}</span>
+      <span class="log-meta">{{ log.actor }} · {{ formatDate(log.created_at) }}</span>
+    </li>
+  </ul>
+</section>

@@ -1,99 +1,25 @@
+// 离线评审兜底数据，接口以 /api 后端返回为准
 export const mockData = {
   "vessel": [
-    {
-      "id": 1,
-      "vessel_name": "vessel name 1",
-      "imo_no": "imo no 1",
-      "carrier": "carrier 1",
-      "length_m": "length m 1",
-      "draft_m": "draft m 1",
-      "eta": "eta 1",
-      "etd": "etd 1",
-      "status": "CONFLICT"
-    },
-    {
-      "id": 2,
-      "vessel_name": "vessel name 2",
-      "imo_no": "imo no 2",
-      "carrier": "carrier 2",
-      "length_m": "length m 2",
-      "draft_m": "draft m 2",
-      "eta": "eta 2",
-      "etd": "etd 2",
-      "status": "APPROVED"
-    },
-    {
-      "id": 3,
-      "vessel_name": "vessel name 3",
-      "imo_no": "imo no 3",
-      "carrier": "carrier 3",
-      "length_m": "length m 3",
-      "draft_m": "draft m 3",
-      "eta": "eta 3",
-      "etd": "etd 3",
-      "status": "DRAFT"
-    }
+    { id: 1, vessel_name: "远洋之星", imo_no: "IMO9472910", carrier: "中远海运", length_m: 220, draft_m: 11.5, eta: "2026-10-10T06:00:00", etd: "2026-10-11T18:00:00", status: "EXPECTED" },
+    { id: 2, vessel_name: "东方明珠", imo_no: "IMO9638512", carrier: "东方海外", length_m: 280, draft_m: 13.2, eta: "2026-10-10T08:30:00", etd: "2026-10-11T20:00:00", status: "EXPECTED" },
+    { id: 3, vessel_name: "南方快航", imo_no: "IMO9751083", carrier: "达飞轮船", length_m: 190, draft_m: 9.8, eta: "2026-10-10T14:00:00", etd: "2026-10-12T06:00:00", status: "EXPECTED" },
+    { id: 4, vessel_name: "海王星", imo_no: "IMO9302178", carrier: "马士基", length_m: 260, draft_m: 12.6, eta: "2026-10-10T20:00:00", etd: "2026-10-12T08:00:00", status: "EXPECTED" },
+    { id: 5, vessel_name: "港湾号", imo_no: "IMO9510219", carrier: "招商轮船", length_m: 175, draft_m: 8.4, eta: "2026-10-11T05:00:00", etd: "2026-10-12T12:00:00", status: "EXPECTED" },
+    { id: 6, vessel_name: "长风轮", imo_no: "IMO9802514", carrier: "中远海运", length_m: 205, draft_m: 10.1, eta: "2026-10-11T10:00:00", etd: "2026-10-13T02:00:00", status: "EXPECTED" }
   ],
   "berth": [
-    {
-      "id": 1,
-      "berth_code": "berth code 1",
-      "length_m": "length m 1",
-      "water_depth_m": "water depth m 1",
-      "berth_type": "CONFLICT",
-      "current_status": "CONFLICT",
-      "safety_note": "safety note 1"
-    },
-    {
-      "id": 2,
-      "berth_code": "berth code 2",
-      "length_m": "length m 2",
-      "water_depth_m": "water depth m 2",
-      "berth_type": "APPROVED",
-      "current_status": "APPROVED",
-      "safety_note": "safety note 2"
-    },
-    {
-      "id": 3,
-      "berth_code": "berth code 3",
-      "length_m": "length m 3",
-      "water_depth_m": "water depth m 3",
-      "berth_type": "BERTHING",
-      "current_status": "DRAFT",
-      "safety_note": "safety note 3"
-    }
+    { id: 1, berth_code: "A01", length_m: 300, water_depth_m: 15, berth_type: "DEEP", current_status: "OPEN", safety_note: "深水泊位，高潮位靠泊" },
+    { id: 2, berth_code: "A02", length_m: 240, water_depth_m: 12, berth_type: "GENERAL", current_status: "OPEN", safety_note: "" },
+    { id: 3, berth_code: "B01", length_m: 210, water_depth_m: 10.5, berth_type: "GENERAL", current_status: "MAINTENANCE", safety_note: "10 月例行维护" }
   ],
   "berthPlan": [
-    {
-      "id": 1,
-      "vessel_id": 1,
-      "berth_id": 1,
-      "planned_arrival": "planned arrival 1",
-      "planned_departure": "planned departure 1",
-      "priority": "priority 1",
-      "status": "CONFLICT",
-      "dispatcher_id": 1
-    },
-    {
-      "id": 2,
-      "vessel_id": 2,
-      "berth_id": 2,
-      "planned_arrival": "planned arrival 2",
-      "planned_departure": "planned departure 2",
-      "priority": "priority 2",
-      "status": "APPROVED",
-      "dispatcher_id": 2
-    },
-    {
-      "id": 3,
-      "vessel_id": 3,
-      "berth_id": 3,
-      "planned_arrival": "planned arrival 3",
-      "planned_departure": "planned departure 3",
-      "priority": "priority 3",
-      "status": "DRAFT",
-      "dispatcher_id": 3
-    }
+    { id: 1, vessel_id: 1, berth_id: 1, planned_arrival: "2026-10-10T08:00:00", planned_departure: "2026-10-10T20:00:00", priority: "HIGH", status: "APPROVED", dispatcher_id: 1, in_conflict: false, conflict_with: null },
+    { id: 2, vessel_id: 2, berth_id: 1, planned_arrival: "2026-10-10T14:00:00", planned_departure: "2026-10-11T08:00:00", priority: "NORMAL", status: "CONFLICT", dispatcher_id: 1, in_conflict: true, conflict_with: { plan_id: 2, other_plan_id: 1, berth_id: 1, berth_code: "A01", reason: "与计划#1 在泊位 A01 时间相撞：优先级 NORMAL 低于 HIGH，低级让高级，请改期" } },
+    { id: 3, vessel_id: 3, berth_id: 2, planned_arrival: "2026-10-10T10:00:00", planned_departure: "2026-10-11T10:00:00", priority: "HIGH", status: "APPROVED", dispatcher_id: 1, in_conflict: false, conflict_with: null },
+    { id: 4, vessel_id: 4, berth_id: 2, planned_arrival: "2026-10-11T06:00:00", planned_departure: "2026-10-11T22:00:00", priority: "HIGH", status: "CONFLICT", dispatcher_id: 1, in_conflict: true, conflict_with: { plan_id: 4, other_plan_id: 3, berth_id: 2, berth_code: "A02", reason: "与计划#3 在泊位 A02 时间相撞：优先级同为 HIGH，编号 #4 大于 #3，编号大者让编号小者，请改期" } },
+    { id: 5, vessel_id: 5, berth_id: 2, planned_arrival: "2026-10-11T18:00:00", planned_departure: "2026-10-12T18:00:00", priority: "LOW", status: "CONFLICT", dispatcher_id: 1, in_conflict: true, conflict_with: { plan_id: 5, other_plan_id: 4, berth_id: 2, berth_code: "A02", reason: "与计划#4 在泊位 A02 时间相撞：优先级 LOW 低于 HIGH，低级让高级，请改期" } },
+    { id: 6, vessel_id: 6, berth_id: 3, planned_arrival: "2026-10-11T09:00:00", planned_departure: "2026-10-12T09:00:00", priority: "NORMAL", status: "APPROVED", dispatcher_id: 1, in_conflict: false, conflict_with: null }
   ],
   "yardSlot": [
     {

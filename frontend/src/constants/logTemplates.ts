@@ -5,3 +5,13 @@ export const LOG_TEMPLATES = {
   YardSlot: ["堆场箱位创建", "堆场箱位更新", "堆场箱位状态变更", "堆场箱位导出"],
   WorkTask: ["港口作业任务创建", "港口作业任务更新", "港口作业任务状态变更", "港口作业任务导出"]
 };
+
+// 泊位计划操作日志动作文案（与后端 BERTH_PLAN_LOG_TEMPLATES 的 key 对齐）
+export const BERTH_PLAN_LOG_ACTION_TEXT: Record<string, string> = {
+  BerthPlanCreate: "计划编排",
+  BerthPlanConflictDetected: "压港计算",
+  BerthPlanConflictCleared: "解除压港",
+  BerthPlanReschedule: "计划改期",
+  BerthPlanApproved: "审批通过",
+  BerthPlanApprovalBlocked: "审批驳回"
+};
